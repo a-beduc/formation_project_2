@@ -6,6 +6,7 @@ import re
 class Book:
     def __init__(self, category, title, price, stock, star_rating, description, upc, product_type, price_without_tax,
                  price_with_tax, tax, availability, number_of_review):
+        # Initialization of attributes ; some may be deleted later depending on customer requests
         self.category = category
         self.title = title
         self.price = price
@@ -22,39 +23,46 @@ class Book:
 
     @staticmethod
     def clean_number_float(number):
+        # transform a string into a float
         float_number = float((re.findall(r'\d+.\d+', number))[0])
         return float_number
 
     @staticmethod
     def clean_number_int(number):
+        # transform a string into an int
         int_number = int((re.findall(r'\d+', number))[0])
         return int_number
 
     @staticmethod
     def extract_category_from_soup(soup):
+        # extract the category from the navigation bar
         category = soup.find(name="ul", class_="breadcrumb")
         category = category.li.find_next_sibling("li").find_next_sibling("li").text.strip()
         return category
 
     @staticmethod
     def extract_title_from_soup(soup):
+        # extract the title ; could have been using only find("h1") since there is only one <h1></h1>
         title = soup.find("div", class_="col-sm-6 product_main").find("h1").text.strip()
         return title
 
     @staticmethod
     def extract_price_from_soup(soup):
+        # extract the price and clean it
         price = soup.find(name="p", class_="price_color").text.strip()
-        price = float(str(price[1:]))
+        price = Book.clean_number_float(price)
         return price
 
     @staticmethod
     def extract_stock_from_soup(soup):
+        # extract the number of book in stock and clean it
         stock = soup.find(name="p", class_="instock availability").text.strip()
         stock = Book.clean_number_int(stock)
         return stock
 
     @staticmethod
     def extract_star_rating_from_soup(soup):
+        # extract the number of stars attributed to a book from 1 to 5
         star_rating = 0
         str_star_rating = str(soup.find_all("p"))
         index_star_notation = str_star_rating.find("star-rating")
@@ -81,6 +89,7 @@ class Book:
 
     @staticmethod
     def extract_table_product_information(soup):
+        # extract the whole table containing information on the product ; return the values as a list
         table_product_information = soup.find(name="table", class_="table table-striped").find_all("td")
         list_table = []
         for i in table_product_information:
@@ -89,6 +98,10 @@ class Book:
 
     @classmethod
     def from_url(cls, url):
+        """ initiate the values of the attributes of the class from an url and return an object.
+        the datas contained within the list extracted from the table are initiated using their index.
+        The whole process might break if a product has a different html structure
+        """
         page = requests.get(url)
         soup = BeautifulSoup(page.content, 'html.parser')
 
@@ -112,21 +125,22 @@ class Book:
 
 
 def main():
+    # just some test
     url = "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
-    book = Book.from_url(url)
-    print(book.category)
-    print(book.title)
-    print(book.price)
-    print(book.stock)
-    print(book.star_rating)
-    print(book.description)
-    print(book.upc)
-    print(book.product_type)
-    print(book.price_without_tax)
-    print(book.price_with_tax)
-    print(book.tax)
-    print(book.availability)
-    print(book.number_of_review)
+    test = Book.from_url(url)
+    print(test.category)
+    print(test.title)
+    print(test.price)
+    print(test.stock)
+    print(test.star_rating)
+    print(test.description)
+    print(test.upc)
+    print(test.product_type)
+    print(test.price_without_tax)
+    print(test.price_with_tax)
+    print(test.tax)
+    print(test.availability)
+    print(test.number_of_review)
 
 
 if __name__ == "__main__":

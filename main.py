@@ -2,8 +2,8 @@ from module_book.book import Book
 
 
 def main():
-    # url = "https://books.toscrape.com/catalogue/scott-pilgrims-precious-little-life-scott-pilgrim-1_987/index.html"
-    url = "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
+    url = "https://books.toscrape.com/catalogue/scott-pilgrims-precious-little-life-scott-pilgrim-1_987/index.html"
+    # url = "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
     book = Book.from_url(url)
     print(book.category)
     print(book.title)

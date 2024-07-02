@@ -1,5 +1,12 @@
-from create_dictionnaries import create_dictionary
 import csv
+import bookclass
+from urls_scraper import get_product_pages_urls
+
+
+def create_dictionary(product_url):
+    books = bookclass.Book.from_url(product_url)
+    books = vars(books)
+    return books
 
 
 def csv_loader(list_of_url, csv_name, batch_size=20):
@@ -16,8 +23,8 @@ def csv_loader(list_of_url, csv_name, batch_size=20):
         current_batch = []
 
         for url in list_of_url:
-            book = create_dictionary(url)
-            current_batch.append(book)
+            books = create_dictionary(url)
+            current_batch.append(books)
             if len(current_batch) == batch_size:
                 writer.writerows(current_batch)
                 current_batch = []
@@ -31,6 +38,10 @@ def csv_loader(list_of_url, csv_name, batch_size=20):
 def main():
     url_2 = "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
     csv_loader(url_2, "testunique")
+
+    url2 = "https://books.toscrape.com/catalogue/category/books/mystery_3/index.html"
+    get_url2 = get_product_pages_urls(url2)
+    csv_loader(get_url2, "testmultiple")
 
 
 if __name__ == "__main__":

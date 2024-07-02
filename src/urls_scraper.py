@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
+
 def get_soup(url):
     page = requests.get(url)
     soup = BeautifulSoup(page.content, 'html.parser')
@@ -45,8 +46,6 @@ def main():
 
     test = get_product_pages_urls(url)
     print(test)
-
-
 
 
 if __name__ == "__main__":

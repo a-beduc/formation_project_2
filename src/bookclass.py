@@ -1,6 +1,5 @@
-import requests
-from bs4 import BeautifulSoup
 import re
+from urls_scraper import get_soup
 
 
 class Book:
@@ -102,8 +101,7 @@ class Book:
         the datas contained within the list extracted from the table are initiated using their index.
         The whole process might break if a product has a different html structure
         """
-        page = requests.get(url)
-        soup = BeautifulSoup(page.content, 'html.parser')
+        soup = get_soup(url)
 
         category = cls.extract_category_from_soup(soup)
         title = cls.extract_title_from_soup(soup)
@@ -125,7 +123,7 @@ class Book:
 
 
 def main():
-    # just some test
+    # to test initiation of an object : expected attributes
     url = "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
     test = Book.from_url(url)
     print(test.category)

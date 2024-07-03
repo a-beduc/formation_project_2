@@ -1,6 +1,7 @@
 import csv
 import bookclass
 from urls_scraper import get_product_pages_urls
+from datetime import datetime
 
 
 def create_dictionary(product_url):
@@ -14,10 +15,12 @@ def csv_loader(list_of_url, batch_size=20):
         list_of_url = ([list_of_url], "no_category")
 
     list_of_urls = list_of_url[0]
-    csv_file = list_of_url[1] + ".csv"
+    now = str(datetime.now())
+    reformated_now = now[0:10] + "_" + now[11:13] + "-" + now[14:16]
+    csv_file = reformated_now + "_" + list_of_url[1] + ".csv"
     header = create_dictionary(list_of_urls[0])
 
-    with open(csv_file, 'a', newline="") as csvfile:
+    with open(csv_file, 'a', newline="", encoding="utf-8") as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=header.keys())
         writer.writeheader()
 

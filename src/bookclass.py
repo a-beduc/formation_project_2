@@ -123,7 +123,7 @@ class Book:
 
 
 def main():
-    # just some test
+    # to test initiation of an object : expected attributes
     url = "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
     test = Book.from_url(url)
     print(test.category)

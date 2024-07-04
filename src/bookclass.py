@@ -1,5 +1,7 @@
 import re
 from urls_scraper import get_soup
+import os
+import requests
 
 
 class Book:
@@ -118,8 +120,19 @@ class Book:
         img_url = cls.extract_img_url_from_soup(soup)
 
         return cls(product_url=product_url, upc=upc, title=title, price_with_tax=price_with_tax,
-                   price_without_tax=price_without_tax, availability=availability,description=description,
+                   price_without_tax=price_without_tax, availability=availability, description=description,
                    category=category, star_rating=star_rating, img_url=img_url)
+
+    def get_img(self):
+        category_dir = os.path.join("img", self.category)
+        os.makedirs(category_dir, exist_ok=True)
+        file_path_name = "img/" + self.category + '/' + self.title.lower().replace(" ", "-") + '.jpg'
+        data = requests.get(self.img_url).content
+        with open(file_path_name, 'wb') as img:
+            img.write(data)
+
+    #
+    #     data = requests.get(self.img_url).content
 
 
 def main():
@@ -129,14 +142,29 @@ def main():
     print(test.product_url)
     print(test.upc)
     print(test.title)
+    print(type(test.title))
     print(test.price_with_tax)
     print(test.price_without_tax)
     print(test.availability)
     print(test.description)
     print(test.category)
+    print(type(test.category))
     print(test.star_rating)
     print(test.img_url)
+    test.get_img()
 
+    # url_2 = "https://books.toscrape.com/catalogue/category/books/mystery_3/index.html"
+    # get_url_2 = get_product_pages_urls(url_2)
+    # for url in get_url_2[0]:
+    #     Book.from_url(url)
+    #
+    # for obj in gc.get_objects():
+    #     if isinstance(obj, Book):
+    #         print(obj.title)
+
+    # url = "https://books.toscrape.com"
+    # book = Book.from_url(url)
+    # get_img
 
 
 if __name__ == "__main__":

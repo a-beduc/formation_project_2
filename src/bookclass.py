@@ -1,24 +1,23 @@
 import re
 from urls_scraper import get_soup
+import os
+import requests
 
 
 class Book:
-    def __init__(self, category, title, price, stock, star_rating, description, upc, product_type, price_without_tax,
-                 price_with_tax, tax, availability, number_of_review):
+    def __init__(self, product_url, upc, title, price_with_tax, price_without_tax, availability, description, category,
+                 star_rating, img_url):
         # Initialization of attributes ; some may be deleted later depending on customer requests
-        self.category = category
-        self.title = title
-        self.price = price
-        self.stock = stock
-        self.star_rating = star_rating
-        self.description = description
+        self.product_url = product_url
         self.upc = upc
-        self.product_type = product_type
-        self.price_without_tax = price_without_tax
+        self.title = title
         self.price_with_tax = price_with_tax
-        self.tax = tax
+        self.price_without_tax = price_without_tax
         self.availability = availability
-        self.number_of_review = number_of_review
+        self.description = description
+        self.category = category
+        self.star_rating = star_rating
+        self.img_url = img_url
 
     @staticmethod
     def clean_number_float(number):
@@ -45,19 +44,19 @@ class Book:
         title = soup.find("div", class_="col-sm-6 product_main").find("h1").text.strip()
         return title
 
-    @staticmethod
-    def extract_price_from_soup(soup):
-        # extract the price and clean it
-        price = soup.find(name="p", class_="price_color").text.strip()
-        price = Book.clean_number_float(price)
-        return price
+    # @staticmethod
+    # def extract_price_from_soup(soup):
+    #     # extract the price and clean it
+    #     price = soup.find(name="p", class_="price_color").text.strip()
+    #     price = Book.clean_number_float(price)
+    #     return price
 
-    @staticmethod
-    def extract_stock_from_soup(soup):
-        # extract the number of book in stock and clean it
-        stock = soup.find(name="p", class_="instock availability").text.strip()
-        stock = Book.clean_number_int(stock)
-        return stock
+    # @staticmethod
+    # def extract_stock_from_soup(soup):
+    #     # extract the number of book in stock and clean it
+    #     stock = soup.find(name="p", class_="instock availability").text.strip()
+    #     stock = Book.clean_number_int(stock)
+    #     return stock
 
     @staticmethod
     def extract_star_rating_from_soup(soup):
@@ -95,6 +94,12 @@ class Book:
             list_table.append(i.text.strip())
         return list_table
 
+    @staticmethod
+    def extract_img_url_from_soup(soup):
+        img_link = soup.find("div", class_="item active").img.get("src")
+        img_url = "https://books.toscrape.com" + img_link[4:]
+        return img_url
+
     @classmethod
     def from_url(cls, url):
         """ initiate the values of the attributes of the class from an url and return an object.
@@ -103,42 +108,63 @@ class Book:
         """
         soup = get_soup(url)
 
-        category = cls.extract_category_from_soup(soup)
-        title = cls.extract_title_from_soup(soup)
-        price = cls.extract_price_from_soup(soup)
-        stock = cls.extract_stock_from_soup(soup)
-        star_rating = cls.extract_star_rating_from_soup(soup)
-        description = cls.extract_description_from_soup(soup)
+        product_url = url
         upc = cls.extract_table_product_information(soup)[0]
-        product_type = cls.extract_table_product_information(soup)[1]
-        price_without_tax = cls.clean_number_float(cls.extract_table_product_information(soup)[2])
+        title = cls.extract_title_from_soup(soup)
         price_with_tax = cls.clean_number_float(cls.extract_table_product_information(soup)[3])
-        tax = cls.clean_number_float(cls.extract_table_product_information(soup)[4])
+        price_without_tax = cls.clean_number_float(cls.extract_table_product_information(soup)[2])
         availability = cls.clean_number_int(cls.extract_table_product_information(soup)[5])
-        number_of_review = cls.extract_table_product_information(soup)[6]
+        description = cls.extract_description_from_soup(soup)
+        category = cls.extract_category_from_soup(soup)
+        star_rating = cls.extract_star_rating_from_soup(soup)
+        img_url = cls.extract_img_url_from_soup(soup)
 
-        return cls(category=category, title=title, price=price, stock=stock, star_rating=star_rating,
-                   description=description, upc=upc, product_type=product_type, price_without_tax=price_without_tax,
-                   price_with_tax=price_with_tax, tax=tax, availability=availability, number_of_review=number_of_review)
+        return cls(product_url=product_url, upc=upc, title=title, price_with_tax=price_with_tax,
+                   price_without_tax=price_without_tax, availability=availability, description=description,
+                   category=category, star_rating=star_rating, img_url=img_url)
+
+    def get_img(self):
+        category_dir = os.path.join("img", self.category)
+        os.makedirs(category_dir, exist_ok=True)
+        file_path_name = "img/" + self.category + '/' + self.title.lower().replace(" ", "-") + '.jpg'
+        data = requests.get(self.img_url).content
+        with open(file_path_name, 'wb') as img:
+            img.write(data)
+
+    #
+    #     data = requests.get(self.img_url).content
 
 
 def main():
     # to test initiation of an object : expected attributes
     url = "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
     test = Book.from_url(url)
-    print(test.category)
-    print(test.title)
-    print(test.price)
-    print(test.stock)
-    print(test.star_rating)
-    print(test.description)
+    print(test.product_url)
     print(test.upc)
-    print(test.product_type)
-    print(test.price_without_tax)
+    print(test.title)
+    print(type(test.title))
     print(test.price_with_tax)
-    print(test.tax)
+    print(test.price_without_tax)
     print(test.availability)
-    print(test.number_of_review)
+    print(test.description)
+    print(test.category)
+    print(type(test.category))
+    print(test.star_rating)
+    print(test.img_url)
+    test.get_img()
+
+    # url_2 = "https://books.toscrape.com/catalogue/category/books/mystery_3/index.html"
+    # get_url_2 = get_product_pages_urls(url_2)
+    # for url in get_url_2[0]:
+    #     Book.from_url(url)
+    #
+    # for obj in gc.get_objects():
+    #     if isinstance(obj, Book):
+    #         print(obj.title)
+
+    # url = "https://books.toscrape.com"
+    # book = Book.from_url(url)
+    # get_img
 
 
 if __name__ == "__main__":

@@ -1,23 +1,27 @@
 import sys
+from time import sleep
 
 sys.path.insert(0, 'src')
-# # temporary solution to allow the importation of some modules. Resolve it later
-
-from src.load_csv import csv_loader
-from src.urls_scraper import get_product_pages_urls, get_list_category_page_url
+import src.load_csv
+import src.urls_scraper
+import src.bookclass
 
 
 def main():
     csv_input = input(
-        "You are about to extract information about every product from the website books.toscrape.com.\n\n "
+        "You are about to extract datas about every product from the website books.toscrape.com.\n\n "
         "Proceed (Y/N) ? ")
     while True:
         if csv_input == "N" or csv_input == "n":
-            print("\nThanks you for using our script.\n\nGoodbye.\n")
+            print("\n########################################\n"
+                  "\n############# GOODBYE ##################\n"
+                  "\n########################################\n")
             exit()
 
         elif csv_input == "Y" or csv_input == "y":
-            print("\n##### .CSV FILE(S) DOWNLOADED #####\n")
+            print("\n########################################\n"
+                  "\n##### I WILL DOWNLOAD .CSV FILE(S) #####\n"
+                  "\n########################################\n")
             break
 
         else:
@@ -25,36 +29,54 @@ def main():
             csv_input = input(
                 "Do you want to extract information about every product from the website books.toscrape.com. (Y/N)")
 
-    # test avec une page produit
-    url = "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
-    csv_loader(url)
-    #
-    # test avec une page catégorie (placé page 1)
-    # url2 = "https://books.toscrape.com/catalogue/category/books/mystery_3/index.html"
-    # get_url2 = get_product_pages_urls(url2)
-    # csv_loader(get_url2)
-    #
-    # url = "https://books.toscrape.com/index.html"
-    # list_category = get_list_category_page_url(url)
-    # for category in list_category:
-    #     get_url = get_product_pages_urls(category)
-    #     csv_loader(get_url)
-
     img_input = input("Do you want to download images from the website : books.toscrape.com ? (Y/N)")
     while True:
-        if img_input == "N" or img_input == "n":
-            print("\nThanks you for using our script.\n\nGoodbye.\n")
-            exit()
+        if img_input == "Y" or img_input == "y":
+            print("\n########################################\n"
+                  "\n##### I WILL DOWNLOAD .JPG FILE(S) #####\n"
+                  "\n########################################\n")
+            break
 
-        elif img_input == "Y" or img_input == "y":
-            print("\n##### .JPG FILE(S) DOWNLOADED #####\n")
-            print("\nThanks you for using our script.\n\nGoodbye.\n")
-            exit()
+        elif img_input == "N" or img_input == "n":
+            print("\n########################################\n"
+                  "\n##### I WON'T DOWNLOAD .JPG FILE(S) #####\n"
+                  "\n########################################\n")
+            break
 
         else:
             print("\ninvalid input, try again")
             img_input = input("Do you want to download images from the website : books.toscrape.com ? (Y/N)")
 
+    print("\n\n########################################\n"
+          "\n######### DOWNLOAD IN PROGRESS #########\n"
+          "\n############# DO NOT EXIT ##############\n"
+          "\n########################################\n\n", flush=True)
+
+    sleep(1)
+
+    # # To test the program with one category.
+    # url = "https://books.toscrape.com/catalogue/category/books/religion_12/index.html"
+    # list_of_url = src.urls_scraper.get_product_pages_urls(url)
+    # list_of_books = src.load_csv.book_creator(list_of_url)
+    # src.load_csv.csv_loader(list_of_books)
+    # if img_input == "Y" or img_input == "y":
+    #     for book in list_of_books[0]:
+    #         book.get_img()
+
+    url = "https://books.toscrape.com/index.html"
+    list_of_category_url = src.urls_scraper.get_list_category_page_url(url)
+    for url_category in list_of_category_url:
+        list_of_url = src.urls_scraper.get_product_pages_urls(url_category)
+        list_of_books = src.load_csv.book_creator(list_of_url)
+        src.load_csv.csv_loader(list_of_books)
+        if img_input == "Y" or img_input =="y":
+            for book in list_of_books[0]:
+                book.get_img()
+
+
+    print("\n########################################\n"
+          "\n############# GOODBYE ##################\n"
+          "\n########################################\n")
 
 if __name__ == "__main__":
     main()

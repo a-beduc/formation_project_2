@@ -36,7 +36,7 @@ class Book:
         # extract the category from the navigation bar
         category = soup.find(name="ul", class_="breadcrumb")
         category = category.li.find_next_sibling("li").find_next_sibling("li").text.strip()
-        return category
+        return category.lower()
 
     @staticmethod
     def extract_title_from_soup(soup):
@@ -124,48 +124,40 @@ class Book:
                    category=category, star_rating=star_rating, img_url=img_url)
 
     def get_img(self):
+        # download image from the link stored in the attribute img_url
+        # name it and store it in appropriate directory
         category_dir = os.path.join("img", self.category)
         os.makedirs(category_dir, exist_ok=True)
-        file_path_name = "img/" + self.category + '/' + self.title.lower().replace(" ", "-") + '.jpg'
+        string_title = self.product_url
+        index_of_last_slash = string_title.rfind("/")
+        string_title_without_last_part = string_title[:index_of_last_slash]
+        index_of_second_last_slash = string_title_without_last_part.rfind("/")
+        index_of_underscore = string_title.rfind("_")
+        string_title = string_title[index_of_second_last_slash+1:index_of_underscore]
+        file_path_name = "img/" + self.category + '/' + string_title + '.jpg'
         data = requests.get(self.img_url).content
         with open(file_path_name, 'wb') as img:
             img.write(data)
 
-    #
-    #     data = requests.get(self.img_url).content
 
-
-def main():
-    # to test initiation of an object : expected attributes
-    url = "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
-    test = Book.from_url(url)
-    print(test.product_url)
-    print(test.upc)
-    print(test.title)
-    print(type(test.title))
-    print(test.price_with_tax)
-    print(test.price_without_tax)
-    print(test.availability)
-    print(test.description)
-    print(test.category)
-    print(type(test.category))
-    print(test.star_rating)
-    print(test.img_url)
-    test.get_img()
-
-    # url_2 = "https://books.toscrape.com/catalogue/category/books/mystery_3/index.html"
-    # get_url_2 = get_product_pages_urls(url_2)
-    # for url in get_url_2[0]:
-    #     Book.from_url(url)
-    #
-    # for obj in gc.get_objects():
-    #     if isinstance(obj, Book):
-    #         print(obj.title)
-
-    # url = "https://books.toscrape.com"
-    # book = Book.from_url(url)
-    # get_img
-
-
-if __name__ == "__main__":
-    main()
+# def main():
+#     # to test initiation of an object : expected attributes
+#     url = "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
+#     test = Book.from_url(url)
+#     print(test.product_url)
+#     print(test.upc)
+#     print(test.title)
+#     print(type(test.title))
+#     print(test.price_with_tax)
+#     print(test.price_without_tax)
+#     print(test.availability)
+#     print(test.description)
+#     print(test.category)
+#     print(type(test.category))
+#     print(test.star_rating)
+#     print(test.img_url)
+#     test.get_img()
+#
+#
+# if __name__ == "__main__":
+#     main()

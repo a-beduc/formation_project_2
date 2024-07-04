@@ -64,13 +64,12 @@ def get_product_pages_urls(url):
             break
     return urls, csv_name
 
-
-def main():
-    # to test the code : expected ([list], category)
-    url = "https://books.toscrape.com/catalogue/category/books/mystery_3/index.html"
-    test = get_product_pages_urls(url)
-    print(test)
-
-
-if __name__ == "__main__":
-    main()
+# def main():
+#     # to test the code : expected ([list], category)
+#     url = "https://books.toscrape.com/catalogue/category/books/mystery_3/index.html"
+#     test = get_product_pages_urls(url)
+#     print(test)
+#
+#
+# if __name__ == "__main__":
+#     main()

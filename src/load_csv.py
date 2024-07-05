@@ -1,5 +1,5 @@
 import csv
-import bookclass
+from .bookclass import Book
 from datetime import datetime
 import os
 
@@ -24,7 +24,7 @@ def book_creator(tuple_list_of_url_category):
         tuple_list_of_url_category = ([tuple_list_of_url_category], "no_category")
     list_of_books = []
     for url in tuple_list_of_url_category[0]:
-        books_of_url = bookclass.Book.from_url(url)
+        books_of_url = Book.from_url(url)
         list_of_books.append(books_of_url)
     return list_of_books, tuple_list_of_url_category[1]
 

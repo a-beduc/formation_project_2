@@ -37,7 +37,7 @@ Make sure you have the following installed on your system:
 4. Activate the virtual environment:
     - On Windows:
         ```bash
-        venv\Scripts\activate
+        cd venv/Scripts/activate.bat
         ```
     - On macOS/Linux:
         ```bash
@@ -54,7 +54,7 @@ Make sure you have the following installed on your system:
 2. Activate the virtual environment:
     - On Windows:
         ```bash
-        venv\Scripts\activate
+        cd venv/Scripts/activate.bat
         ```
     - On macOS/Linux:
         ```bash
@@ -64,3 +64,4 @@ Make sure you have the following installed on your system:
     ```bash
     python main.py
     ```
+4. Follow the instruction that appear ont the terminal by answering Y (yes) or N (no).

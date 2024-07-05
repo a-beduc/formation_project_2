@@ -1,5 +1,5 @@
 import re
-from urls_scraper import get_soup
+from .urls_scraper import get_soup
 import os
 import requests
 

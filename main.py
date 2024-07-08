@@ -7,6 +7,7 @@ def main():
     csv_input = input(
         "\nYou are about to extract datas about every product from the website books.toscrape.com.\n"
         " Proceed (Y/N) ? ")
+    # Small UI using the console
     while True:
         if csv_input == "N" or csv_input == "n":
             print("\n########################################"
@@ -49,8 +50,14 @@ def main():
           "\n########################################\n", flush=True)
 
     url = "https://books.toscrape.com/index.html"
+    # url can also work with : "https://books.toscrape.com/catalogue/category/books_1/index.html" but it may break if
+    # it starts with another url.
     list_of_category_url = src.urls_scraper.get_list_category_page_url(url)
+    # create a list of links for every category
     for url_category in list_of_category_url:
+        # for every category, create a list of links for every product, then create object Book for every product.
+        # then transform Book object in dictionaries and load them in a CSV.
+        # if the users asked for images, it uses the attribute "image_url" of Books to download the images.
         list_of_url = src.urls_scraper.get_product_pages_urls(url_category)
         list_of_books = src.load_csv.book_creator(list_of_url)
         src.load_csv.csv_loader(list_of_books)

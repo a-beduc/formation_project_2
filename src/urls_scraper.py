@@ -13,10 +13,12 @@ def get_list_category_page_url(url):
     # get the urls that link to categories and put them in a list
     list_of_link = []
     soup = get_soup(url).find("ul", class_="nav nav-list").find_all("a")
-    i = url.rfind("/")
+    category_link_start = "https://books.toscrape.com/catalogue/category"
     for link in soup:
-        x = link.get("href")
-        list_of_link.append(url[:i + 1] + x)
+        category_link_end = link.get("href")
+        j = category_link_end[:(category_link_end.rfind("/"))].rfind("/")
+        print(j)
+        list_of_link.append(category_link_start + category_link_end[j:])
     list_of_link.pop(0)
     return list_of_link
 

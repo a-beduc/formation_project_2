@@ -17,7 +17,6 @@ def get_list_category_page_url(url):
     for link in soup:
         category_link_end = link.get("href")
         j = category_link_end[:(category_link_end.rfind("/"))].rfind("/")
-        print(j)
         list_of_link.append(category_link_start + category_link_end[j:])
     list_of_link.pop(0)
     return list_of_link

@@ -13,7 +13,7 @@ def get_list_category_page_url(url):
     # get the urls that link to categories and put them in a list
     list_of_link = []
     soup = get_soup(url).find("ul", class_="nav nav-list").find_all("a")
-    category_link_start = "https://books.toscrape.com/catalogue/category"
+    category_link_start = "https://books.toscrape.com/catalogue/category/books"
     for link in soup:
         category_link_end = link.get("href")
         j = category_link_end[:(category_link_end.rfind("/"))].rfind("/")
@@ -65,12 +65,3 @@ def get_product_pages_urls(url):
             break
     return urls, category
 
-# def main():
-#     # to test the code : expected ([list], category)
-#     url = "https://books.toscrape.com/catalogue/category/books/mystery_3/index.html"
-#     test = get_product_pages_urls(url)
-#     print(test)
-#
-#
-# if __name__ == "__main__":
-#     main()

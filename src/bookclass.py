@@ -1,5 +1,5 @@
 import re
-from .urls_scraper import get_soup
+from src.urls_scraper import get_soup
 import os
 import requests
 
@@ -44,20 +44,6 @@ class Book:
         title = soup.find("div", class_="col-sm-6 product_main").find("h1").text.strip()
         return title
 
-    # @staticmethod
-    # def extract_price_from_soup(soup):
-    #     # extract the price and clean it
-    #     price = soup.find(name="p", class_="price_color").text.strip()
-    #     price = Book.clean_number_float(price)
-    #     return price
-
-    # @staticmethod
-    # def extract_stock_from_soup(soup):
-    #     # extract the number of book in stock and clean it
-    #     stock = soup.find(name="p", class_="instock number_available").text.strip()
-    #     stock = Book.clean_number_int(stock)
-    #     return stock
-
     @staticmethod
     def extract_star_rating_from_soup(soup):
         # extract the number of stars attributed to a book from 1 to 5
@@ -65,6 +51,7 @@ class Book:
         str_star_rating = str(soup.find_all("p"))
         index_star_notation = str_star_rating.find("star-rating")
         cas = ""
+        # create a string of 3 characters from the classes star-rating One / Two / Three / Four / Five and match it
         for i in range(index_star_notation + 12, index_star_notation + 15):
             cas = cas + str_star_rating[i]
         match cas:
@@ -134,31 +121,9 @@ class Book:
         string_title_without_last_part = string_title[:index_of_last_slash]
         index_of_second_last_slash = string_title_without_last_part.rfind("/")
         index_of_underscore = string_title.rfind("_")
-        string_title = string_title[index_of_second_last_slash+1:index_of_underscore]
-        file_path_name = "img/" + self.category + '/' + string_title + '.jpg'
+        string_title = string_title[index_of_second_last_slash + 1:index_of_underscore]
+        extension = self.image_url.split(".")[-1]
+        file_path_name = "img/" + self.category + '/' + string_title + "." + extension
         data = requests.get(self.image_url).content
         with open(file_path_name, 'wb') as img:
             img.write(data)
-
-
-# def main():
-#     # to test initiation of an object : expected attributes
-#     url = "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
-#     test = Book.from_url(url)
-#     print(test.product_url)
-#     print(test.universal_product_code)
-#     print(test.title)
-#     print(type(test.title))
-#     print(test.price_including_tax)
-#     print(test.price_excluding_tax)
-#     print(test.number_available)
-#     print(test.product_description)
-#     print(test.category)
-#     print(type(test.category))
-#     print(test.review_rating)
-#     print(test.image_url)
-#     test.get_img()
-#
-#
-# if __name__ == "__main__":
-#     main()

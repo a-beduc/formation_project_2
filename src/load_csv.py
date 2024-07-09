@@ -1,5 +1,5 @@
 import csv
-from .bookclass import Book
+from src.bookclass import Book
 from datetime import datetime
 import os
 

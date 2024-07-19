@@ -20,6 +20,10 @@ It creates a .csv file per category of books containing the following informatio
 
 As an option, the extractor allows you to download images of the book covers and store them in an appropriate directory.
 
+## Where are the datas stored ?
+
+The user should be able to find the extracted datas in two separate directories named 'csv' and 'img' located in the same directory than main.py 
+
 ## Installation
 
 Make sure you have the following installed on your system:
@@ -37,7 +41,7 @@ Make sure you have the following installed on your system:
 4. Activate the virtual environment:
     - On Windows:
         ```bash
-        cd venv/Scripts/activate.bat
+        cd venv/Scripts/activate
         ```
     - On macOS/Linux:
         ```bash
@@ -54,7 +58,7 @@ Make sure you have the following installed on your system:
 2. Activate the virtual environment:
     - On Windows:
         ```bash
-        cd venv/Scripts/activate.bat
+        cd venv/Scripts/activate
         ```
     - On macOS/Linux:
         ```bash
